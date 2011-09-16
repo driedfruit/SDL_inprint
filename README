@@ -1,0 +1,65 @@
+# SDL_inprint
+
+Add simplest text output to your SDL program. Inline font included. Font collection included.
+
+Has almost no good use cases; however, I found myself reusing this code/font format over
+and over, so maybe you would find some use for it too. 
+
+ * If you're serious about inlining your images, use GRIT instead.
+ * If you're serious about bitmap fonts, a meta-data-less bitmap is not enough, use
+(there was an SDL library for that, todo: find and insert link) instead.
+ * If you're *really* serious about fonts, and want Unicode and italics and everything, use
+SDL_ttf instead.
+
+(todo: links!)
+
+## how to use
+
+Add 'inprint.c' to your Makefile.
+Now, you can:
+```c
+	screen = SDL_SetVideoMode(width, height, bpp, flags);
+
+	prepare_inline_font();
+
+	incolor(0xFF0000, 0x333333);
+	inprint(screen, "Hello World!", 10, 10);
+
+	kill_inline_font();
+```
+The whole demo is in 'example.c'.
+
+You can also do something like
+```c
+	infont(SDL_LoadBMP("fontfile.bmp")); //use bitmap font
+```
+and
+```c
+	infont(NULL); //revert to inline font
+```
+
+You would also probably want to automate the inlining into the build process,
+which shouldn't be hard. See 'Makefile' for an example.
+
+## font collection
+
+All the fonts in the 'fonts/' directory are free (or should be free, correct me
+when I'm wrong) and adhere to the convention described below. Feel free to add
+your fonts or make old ones pretier (it's actually quite fun to work on bitmap
+fonts even if you're not that good at graphics). 
+
+## bitmap fonts
+
+First half of ASCII table (128 symbols).
+Formatted as 16 x 8 table.
+Color 0 is background.
+Color 1 is foreground.
+One Bit Per Pixel. 1BPP. *Bit*map.
+
+## inline fonts
+
+Inline fonts are in XBM-like format (TODO: use real XBM!) format.
+
+## TODO
+
+make bmp2xbm a C program to allow easier execution on windows (who would've thought). 
