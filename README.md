@@ -20,25 +20,29 @@ everything, use [SDL_ttf][ttf] instead.
 
 Add 'inprint.c' to your Makefile.
 Now, you can:
+
 ```c
-	screen = SDL_SetVideoMode(width, height, bpp, flags);
+screen = SDL_SetVideoMode(width, height, bpp, flags);
 
-	prepare_inline_font();
+prepare_inline_font();
 
-	incolor(0xFF0000, 0x333333);
-	inprint(screen, "Hello World!", 10, 10);
+incolor(0xFF0000, 0x333333);
+inprint(screen, "Hello World!", 10, 10);
 
-	kill_inline_font();
+kill_inline_font();
 ```
+
 The whole demo is in 'example.c'.
 
 You can also do something like
+
 ```c
 	infont(SDL_LoadBMP("fontfile.bmp")); //use bitmap font
 ```
+
 and
 ```c
-	infont(NULL); //revert to inline font
+infont(NULL); //revert to inline font
 ```
 
 You would also probably want to automate the inlining into the build process,
