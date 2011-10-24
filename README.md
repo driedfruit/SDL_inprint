@@ -66,8 +66,6 @@ fonts even if you're not that good at graphics).
 
 ## inline fonts
 
-Inline fonts are in XBM-like format (TODO: use real XBM!) format.
+Inline fonts are in XBM format.[xbm]
 
-## TODO
-
-make bmp2xbm a C program to allow easier execution on windows (who would've thought). 
+ [xbm]: http://en.wikipedia.org/wiki/X_BitMap
