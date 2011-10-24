@@ -2,35 +2,34 @@
 
 #include "inline_font.h" /* Actual font data */
 
+#define CHARACTERS_PER_ROW    16 /* I like 16 x 8 fontsets. */
+#define CHARACTERS_PER_COLUMN 8  /* 128 x 1 is another popular format. */
+
 SDL_Surface *inline_font = NULL;
 SDL_Surface *selected_font = NULL;
 void prepare_inline_font(void)
 {
-	if (inline_font != NULL) { selected_font = inline_font; return; }
-
-	inline_font = SDL_CreateRGBSurface(0, font_source.width, font_source.height, 8, 0, 0, 0, 0);
-	SDL_Surface *dst = inline_font;
-
 	Uint8 *pix_ptr, tmp;
-
 	int i, len, j;
 
-	/* Cache pointer to pixels and array length */
-	pix_ptr = (Uint8 *)dst->pixels;		
-	len = dst->h * dst->w / font_source.pixels_per_byte;
+	if (inline_font != NULL) { selected_font = inline_font; return; }
 
-	/* Lock, Copy, Unlock */
-	SDL_LockSurface(dst);
+	inline_font = SDL_CreateRGBSurface(0, inline_font_width, inline_font_height, 8, 0, 0, 0, 0);
+
+	/* Get pointer to pixels and array length */
+	pix_ptr = (Uint8 *)inline_font->pixels;
+	len = inline_font->h * inline_font->w / 8;
+
+	/* Copy */
 	for (i = 0; i < len; i++) 
 	{
-		tmp = (Uint8)font_source.pixel_data[i];
-		for (j = 0; j < font_source.pixels_per_byte; j++) 
+		tmp = (Uint8)inline_font_bits[i];
+		for (j = 0; j < 8; j++) 
 		{
 			Uint8 mask = (0x01 << j);
-			pix_ptr[i * font_source.pixels_per_byte + j] = ((tmp & mask) ? 1 : 0);
+			pix_ptr[i * 8 + j] = ((tmp & mask) ? 1 : 0);
 		}
 	}
-	SDL_UnlockSurface(dst);
 
 	selected_font = inline_font;
 }
@@ -53,18 +52,30 @@ void incolor(Uint32 fore, Uint32 back) /* Colors must be in 0x00RRGGBB format ! 
 }
 void inprint(SDL_Surface *dst, const char *str, Uint32 x, Uint32 y)
 {
-	int i, len, w, h;
-	len = strlen(str);
-	w = selected_font->w / 16;
-	h = selected_font->h / 8;
-	for (i = 0; i < len; i++) {
-		int id = (char)str[i];
-		int row = id / 16;
-		int col = id - (row * 16);
+	SDL_Rect s_rect;
+	SDL_Rect d_rect;
 
-		SDL_Rect s_rect = { col * w, row * h, w, h }; 
-		SDL_Rect d_rect = { x, y, w, h };
+	s_rect.w = selected_font->w / CHARACTERS_PER_ROW;
+	s_rect.h = selected_font->h / CHARACTERS_PER_COLUMN;
+
+	for (; *str; str++)
+	{
+		int id = (int)*str;
+#if (CHARACTERS_PER_COLUMN != 1)
+		int row = id / CHARACTERS_PER_ROW;
+		int col = id % CHARACTERS_PER_ROW;
+		s_rect.x = col * s_rect.w;
+		s_rect.y = row * s_rect.h;
+#else
+		s_rect.x = id * s_rect.w;
+		s_rect.y = 0;
+#endif
+		d_rect.x = x;
+		d_rect.y = y;
+		d_rect.w = s_rect.w;
+		d_rect.h = s_rect.h;
 		SDL_BlitSurface(selected_font, &s_rect, dst, &d_rect);
-		x = x + w;	
+		x = x + s_rect.w;
 	}
 }
+SDL_Surface *get_inline_font(void) { return selected_font; }

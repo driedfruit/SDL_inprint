@@ -26,7 +26,7 @@ int main( int argc, char* args[] )
 
 	prepare_inline_font();
 	
-//	infont(SDL_LoadBMP("fonts/oddball6x8.bmp"));
+/*	infont(SDL_LoadBMP("fonts/oddball6x8.bmp")); */
 
 	incolor(0xFF0000, 0x333333);
 
