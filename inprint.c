@@ -8,7 +8,7 @@ void prepare_inline_font(void)
 {
 	if (inline_font != NULL) { selected_font = inline_font; return; }
 
-	inline_font = SDL_CreateRGBSurface(SDL_HWSURFACE, font_source.width, font_source.height, 8, 0xFF, 0xFF, 0xFF, 0x00);
+	inline_font = SDL_CreateRGBSurface(SDL_HWSURFACE, font_source.width, font_source.height, 8, 0, 0, 0, 0);
 	SDL_Surface *dst = inline_font;
 
 	Uint8 *pix_ptr, tmp;
