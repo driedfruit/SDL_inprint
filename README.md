@@ -18,9 +18,8 @@ everything, use [SDL_ttf][ttf] instead.
 
 ## how to use
 
-Optional: generate an inline font by running `bmp2xbm` tool.
-
-Build `inprint.c` with your project. Include `SDL_inprint.h` and `inline_font.h`.
+Build `inprint.c` with your project. Bundle `inline_font.h`. 
+Include `SDL_inprint.h`.
 
 Now, you can:
 
@@ -77,3 +76,5 @@ fonts even if you're not that good at graphics).
 Inline fonts are in [XBM format][xbm].
 
  [xbm]: http://en.wikipedia.org/wiki/X_BitMap
+
+You can generate them, using the included `bmp2xbm` tool.
