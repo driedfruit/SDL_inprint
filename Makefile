@@ -6,7 +6,6 @@ LDFLAGS=`sdl-config --libs`
 CFLAGS2=-g -Wall `sdl2-config --cflags`
 LDFLAGS2=`sdl2-config --libs`
 
-#XBM=php ./bmp2xbm.php
 XBM=./bmp2xbm
 
 FONT_FILE=fonts/qbfat8x8.bmp
