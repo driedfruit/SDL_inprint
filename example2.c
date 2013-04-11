@@ -28,7 +28,8 @@ int main(int argc, char* argv[])
 	// Clear the entire screen to our selected color.
 	SDL_RenderClear(renderer);
 
-	incolor24(0xffffff);
+	// Make color white and render "Hello World"
+	incolor(0xffffff, /* unused */ 0);
 	inprint(renderer, "Hello World", 20, 20);
 
 	// Up until now everything was drawn behind the scenes.

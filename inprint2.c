@@ -64,19 +64,25 @@ void kill_inline_font(void) {
 	SDL_DestroyTexture(inline_font);
 	inline_font = NULL; 
 }
-void infont(SDL_Renderer *renderer, SDL_Surface *font)
+void infont(SDL_Renderer *renderer, SDL_Texture *font)
 {
-	selected_font = SDL_CreateTextureFromSurface(renderer, font);
-	selected_font_w = font->w;
-	selected_font_h = font->h;
+	Uint32 format;
+	int access;
+	int w, h;
 
-	if (font == NULL) prepare_inline_font(renderer);
+	if (font == NULL) return prepare_inline_font(renderer);
+
+	SDL_QueryTexture(font, &format, &access, &w, &h);
+
+	selected_font = font;
+	selected_font_w = w;
+	selected_font_h = h;
 }
-void incolor(SDL_Color *color)
+void incolor1(SDL_Color *color)
 {
 	SDL_SetTextureColorMod(selected_font, color->r, color->g, color->b);
 }
-void incolor24(Uint32 fore) /* Colors must be in 0x00RRGGBB format ! */
+void incolor(Uint32 fore, Uint32 unused) /* Color must be in 0x00RRGGBB format ! */
 {
 	SDL_Color pal[1];
 	pal[0].r = (Uint8)((fore & 0x00FF0000) >> 16); 
