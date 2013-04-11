@@ -18,7 +18,10 @@ everything, use [SDL_ttf][ttf] instead.
 
 ## how to use
 
-Build 'inprint.c' with your project. Include `SDL_inprint.h`
+Optional: generate an inline font by running `bmp2xbm` tool.
+
+Build `inprint.c` with your project. Include `SDL_inprint.h` and `inline_font.h`.
+
 Now, you can:
 
 ```c
