@@ -49,6 +49,11 @@ and
 You would also probably want to automate the inlining into the build process,
 which shouldn't be hard. See 'Makefile' for an example.
 
+## SDL2
+
+SDL2 version also exists, with a slightly different API. See `SDL2_inprint.h`,
+`inprint2.c` and `example2.c`. 
+
 ## font collection
 
 All the fonts in the 'fonts/' directory are free (or should be free, correct me
