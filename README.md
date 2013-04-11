@@ -18,7 +18,7 @@ everything, use [SDL_ttf][ttf] instead.
 
 ## how to use
 
-Add 'inprint.c' to your Makefile.
+Build 'inprint.c' with your project. Include `SDL_inprint.h`
 Now, you can:
 
 ```c
@@ -66,6 +66,6 @@ fonts even if you're not that good at graphics).
 
 ## inline fonts
 
-Inline fonts are in XBM format.[xbm]
+Inline fonts are in [XBM format][xbm].
 
  [xbm]: http://en.wikipedia.org/wiki/X_BitMap
