@@ -20,7 +20,8 @@ int main(int argc, char* argv[])
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
 	// Yay
-	prepare_inline_font(renderer);
+	inrenderer(renderer);
+	prepare_inline_font();
 
 	// Select the color for drawing.
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

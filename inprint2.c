@@ -5,16 +5,20 @@
 #define CHARACTERS_PER_ROW    16 /* I like 16 x 8 fontsets. */
 #define CHARACTERS_PER_COLUMN 8  /* 128 x 1 is another popular format. */
 
+static SDL_Renderer *selected_renderer = NULL;
 SDL_Texture *inline_font = NULL;
 SDL_Texture *selected_font = NULL;
 Uint16 selected_font_w, selected_font_h;
 
-void prepare_inline_font(SDL_Renderer *renderer)
+void prepare_inline_font()
 {
 	Uint8 *pix_ptr, tmp;
 	int i, len, j;
 	SDL_Surface *surface, *surface32;
 	Uint32 rmask, gmask, bmask, amask;
+
+	selected_font_w = inline_font_width;
+	selected_font_h = inline_font_height;
 
 	if (inline_font != NULL) { selected_font = inline_font; return; }
 
@@ -52,25 +56,27 @@ void prepare_inline_font(SDL_Renderer *renderer)
 	SDL_FillRect(surface32, NULL, 0x00000000);
 	SDL_BlitSurface(surface, NULL, surface32, NULL);
 
-	inline_font = SDL_CreateTextureFromSurface(renderer, surface32);
+	inline_font = SDL_CreateTextureFromSurface(selected_renderer, surface32);
 	SDL_FreeSurface(surface);
 	SDL_FreeSurface(surface32);
 
 	selected_font = inline_font;
-	selected_font_w = inline_font_width;
-	selected_font_h = inline_font_height;
 }
 void kill_inline_font(void) {
 	SDL_DestroyTexture(inline_font);
 	inline_font = NULL; 
 }
-void infont(SDL_Renderer *renderer, SDL_Texture *font)
+extern void inrenderer(SDL_Renderer *renderer) 
+{
+	selected_renderer = renderer;
+}
+void infont(SDL_Texture *font)
 {
 	Uint32 format;
 	int access;
 	int w, h;
 
-	if (font == NULL) return prepare_inline_font(renderer);
+	if (font == NULL) return prepare_inline_font();
 
 	SDL_QueryTexture(font, &format, &access, &w, &h);
 
@@ -97,6 +103,8 @@ void inprint(SDL_Renderer *dst, const char *str, Uint32 x, Uint32 y)
 
 	s_rect.w = selected_font_w / CHARACTERS_PER_ROW;
 	s_rect.h = selected_font_h / CHARACTERS_PER_COLUMN;
+
+	if (dst == NULL) dst = selected_renderer;
 
 	for (; *str; str++)
 	{
