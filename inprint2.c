@@ -52,10 +52,7 @@ void prepare_inline_font()
 
 	selected_font = inline_font;
 }
-void kill_inline_font(void) {
-	SDL_DestroyTexture(inline_font);
-	inline_font = NULL; 
-}
+void kill_inline_font(void) { SDL_DestroyTexture(inline_font); inline_font = NULL; }
 void inrenderer(SDL_Renderer *renderer) 
 {
 	selected_renderer = renderer;
