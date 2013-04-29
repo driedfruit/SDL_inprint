@@ -12,33 +12,28 @@ static Uint16 selected_font_w, selected_font_h;
 
 void prepare_inline_font()
 {
-	Uint8 *pix_ptr, tmp;
+	Uint32 *pix_ptr, tmp;
 	int i, len, j;
-	SDL_Surface *surface, *surface32;
-	Uint32 rmask, gmask, bmask, amask;
+	SDL_Surface *surface;
+	Uint32 colors[2];
 
 	selected_font_w = inline_font_width;
 	selected_font_h = inline_font_height;
 
 	if (inline_font != NULL) { selected_font = inline_font; return; }
 
-	surface = SDL_CreateRGBSurface(0, inline_font_width, inline_font_height, 8, 0, 0, 0, 0);
-
+	surface = SDL_CreateRGBSurface(0, inline_font_width, inline_font_height, 32, 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	rmask = 0xff000000;
-	gmask = 0x00ff0000;
-	bmask = 0x0000ff00;
-	amask = 0x000000ff;
+	0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff
 #else
-	rmask = 0x000000ff;
-	gmask = 0x0000ff00;
-	bmask = 0x00ff0000;
-	amask = 0xff000000;
+	0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000
 #endif
-	surface32 = SDL_CreateRGBSurface(0, inline_font_width, inline_font_height, 32, rmask, gmask, bmask, amask);
+	);
+	colors[0] = SDL_MapRGBA(surface->format, 0xFF, 0xFF, 0xFF, 0xFF);
+	colors[1] = SDL_MapRGBA(surface->format, 0x00, 0x00, 0x00, 0x00 /* or 0xFF, to have bg-color */);
 
 	/* Get pointer to pixels and array length */
-	pix_ptr = (Uint8 *)surface->pixels;
+	pix_ptr = (Uint32 *)surface->pixels;
 	len = surface->h * surface->w / 8;
 
 	/* Copy */
@@ -48,17 +43,12 @@ void prepare_inline_font()
 		for (j = 0; j < 8; j++)
 		{
 			Uint8 mask = (0x01 << j);
-			pix_ptr[i * 8 + j] = ((tmp & mask) ? 1 : 0);
+			pix_ptr[i * 8 + j] = colors[(tmp & mask) >> j];
 		}
 	}
 
-	SDL_SetColorKey(surface, SDL_TRUE, 1);
-	SDL_FillRect(surface32, NULL, 0x00000000);
-	SDL_BlitSurface(surface, NULL, surface32, NULL);
-
-	inline_font = SDL_CreateTextureFromSurface(selected_renderer, surface32);
+	inline_font = SDL_CreateTextureFromSurface(selected_renderer, surface);
 	SDL_FreeSurface(surface);
-	SDL_FreeSurface(surface32);
 
 	selected_font = inline_font;
 }

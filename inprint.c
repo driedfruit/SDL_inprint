@@ -27,7 +27,7 @@ void prepare_inline_font(void)
 		for (j = 0; j < 8; j++) 
 		{
 			Uint8 mask = (0x01 << j);
-			pix_ptr[i * 8 + j] = ((tmp & mask) ? 1 : 0);
+			pix_ptr[i * 8 + j] = (tmp & mask) >> j;
 		}
 	}
 
