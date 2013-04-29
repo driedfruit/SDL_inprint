@@ -6,41 +6,44 @@ int main(int argc, char* argv[])
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
-	// Initialize SDL.
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		return 1;
+	Uint32 width = 640;
+	Uint32 height = 480;
+	Uint32 flags = 0;
 
-	// Create the window where we will draw.
-	window = SDL_CreateWindow("SDL2_inprint",
-			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			512, 512,
-			SDL_WINDOW_SHOWN);
+	int i; for (i = 1; i < argc; i++) if (!strcasecmp("--fullscreen", argv[i])) flags |= SDL_WINDOW_FULLSCREEN;
 
-	// We must call SDL_CreateRenderer in order for draw calls to affect this window.
-	renderer = SDL_CreateRenderer(window, -1, 0);
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError());
+		exit(-1);
+	}
 
-	// Yay
+	if (SDL_CreateWindowAndRenderer(width, height, flags, &window, &renderer) < 0) {
+		fprintf(stderr, "Window/Renderer initialization failed: %s\n", SDL_GetError());
+		exit(-1);
+	}
+
+	/* For SDL2, "inrenderer" is the first function that must be called */
 	inrenderer(renderer);
 	prepare_inline_font();
 
-	// Select the color for drawing.
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-	// Clear the entire screen to our selected color.
+	/* Clear screen */
+	SDL_SetRenderDrawColor(renderer, 0x33, 0x33, 0x33, 255);
 	SDL_RenderClear(renderer);
 
-	// Make color white and render "Hello World"
+	/* Make color white and print "Hello World" */
 	incolor(0xffffff, /* unused */ 0);
-	inprint(renderer, "Hello World", 20, 20);
+	inprint(renderer, "Hello World", 10, 10);
 
-	// Up until now everything was drawn behind the scenes.
-	// This will show the new, red contents of the window.
-	SDL_RenderPresent(renderer);
+	/* Make color red and print some lines */
+	incolor(0xFF0000, 0);
+	inprint(renderer, "A QUICK BROWN FOX JUMPS OVER A LAZY DOG!", 10, 30);
+	inprint(renderer, "a quick brown fox jumps over a lazy dog?", 10, 60);
+	inprint(renderer, "`'.,:;0123456789{}()[]|\\/-+*=!@#$%^&", 10, 90);
 
-	// Give us time to see the window.
-	SDL_Delay(5000);
+	/* Wait for a while */
+	for (i = 1000; i > 20; i--) { SDL_RenderPresent(renderer); SDL_Delay(10); }
 
-	// Always be sure to clean up
+	/* Cleanup */
 	kill_inline_font();
 	SDL_Quit();
 	return 0;
