@@ -110,6 +110,8 @@ int save_xbm(const char *filename) {
 
 	int n, bit, x, y;
 
+	unsigned int t;
+
 	FILE *f;
 
 	f = fopen(filename, "wb");
@@ -120,7 +122,7 @@ int save_xbm(const char *filename) {
 	fprintf(f, "#define %s_height %d\n", name, height); 
 	fprintf(f, "static unsigned char %s_bits[] = {\n", name); 
 
-	char t = 0; bit = 0;
+	t = 0; bit = 0;
 	for (y = 0; y < height; y++)
 	for (x = 0; x < width;  x++) {
 
@@ -128,7 +130,7 @@ int save_xbm(const char *filename) {
 				t |= (0x01 << (7-bit));
 			bit++;
 			if (bit > 7) {
-				fprintf(f, "0x%02hhx, ", t);
+				fprintf(f, "0x%02x, ", t);
 				bit = 0;
 				t = 0;
 				n++;
@@ -141,6 +143,7 @@ int save_xbm(const char *filename) {
 
 	fseek(f, -2, SEEK_CUR);
 	fprintf(f, "  };\n");
+	fclose(f);
 	return 0;
 }
 
