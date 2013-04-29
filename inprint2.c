@@ -66,7 +66,7 @@ void kill_inline_font(void) {
 	SDL_DestroyTexture(inline_font);
 	inline_font = NULL; 
 }
-extern void inrenderer(SDL_Renderer *renderer) 
+void inrenderer(SDL_Renderer *renderer) 
 {
 	selected_renderer = renderer;
 }
