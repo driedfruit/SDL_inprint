@@ -55,8 +55,12 @@ void inprint(SDL_Surface *dst, const char *str, Uint32 x, Uint32 y)
 	SDL_Rect s_rect;
 	SDL_Rect d_rect;
 
+	d_rect.x = x;
+	d_rect.y = y;
 	s_rect.w = selected_font->w / CHARACTERS_PER_ROW;
 	s_rect.h = selected_font->h / CHARACTERS_PER_COLUMN;
+	d_rect.w = s_rect.w;
+	d_rect.h = s_rect.h;
 
 	for (; *str; str++)
 	{
@@ -70,12 +74,14 @@ void inprint(SDL_Surface *dst, const char *str, Uint32 x, Uint32 y)
 		s_rect.x = id * s_rect.w;
 		s_rect.y = 0;
 #endif
-		d_rect.x = x;
-		d_rect.y = y;
-		d_rect.w = s_rect.w;
-		d_rect.h = s_rect.h;
+		if (id == '\n')
+		{
+			d_rect.x = x;
+			d_rect.y += s_rect.h;
+			continue;
+		}
 		SDL_BlitSurface(selected_font, &s_rect, dst, &d_rect);
-		x = x + s_rect.w;
+		d_rect.x += s_rect.w;
 	}
 }
 SDL_Surface *get_inline_font(void) { return selected_font; }
