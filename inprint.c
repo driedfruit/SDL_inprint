@@ -5,8 +5,8 @@
 #define CHARACTERS_PER_ROW    16 /* I like 16 x 8 fontsets. */
 #define CHARACTERS_PER_COLUMN 8  /* 128 x 1 is another popular format. */
 
-SDL_Surface *inline_font = NULL;
-SDL_Surface *selected_font = NULL;
+static SDL_Surface *inline_font = NULL;
+static SDL_Surface *selected_font = NULL;
 void prepare_inline_font(void)
 {
 	Uint8 *pix_ptr, tmp;

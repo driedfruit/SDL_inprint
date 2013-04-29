@@ -6,9 +6,9 @@
 #define CHARACTERS_PER_COLUMN 8  /* 128 x 1 is another popular format. */
 
 static SDL_Renderer *selected_renderer = NULL;
-SDL_Texture *inline_font = NULL;
-SDL_Texture *selected_font = NULL;
-Uint16 selected_font_w, selected_font_h;
+static SDL_Texture *inline_font = NULL;
+static SDL_Texture *selected_font = NULL;
+static Uint16 selected_font_w, selected_font_h;
 
 void prepare_inline_font()
 {
