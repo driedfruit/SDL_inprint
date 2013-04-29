@@ -149,7 +149,7 @@ int save_xbm(const char *filename) {
 
 int main(int argc, char *argv[]) {
 
-	char output[1024];
+	const char *output;
 
 	if (argc < 2) {
 		show_usage(argv[0]);
@@ -157,9 +157,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (argc > 2) {
-		strcpy(output, argv[2]);
+		output = argv[2];
 	} else {
-		strcpy(output, "inline_font.h");
+		output = "inline_font.h";
 	}
 
 	if (load_bitmap(argv[1])) {
