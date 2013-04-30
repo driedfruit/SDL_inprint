@@ -63,7 +63,7 @@ void infont(SDL_Texture *font)
 	int access;
 	int w, h;
 
-	if (font == NULL) return prepare_inline_font();
+	if (font == NULL) { prepare_inline_font(); return; }
 
 	SDL_QueryTexture(font, &format, &access, &w, &h);
 
