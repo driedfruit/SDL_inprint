@@ -125,7 +125,10 @@ int save_xbm(const char *filename) {
 
 	f = fopen(filename, "wb");
 
-	if (!f) return 1;
+	if (!f) {
+		fprintf(stderr, "Can't open '%s'\n", filename);
+		return 1;
+	}
 
 	fprintf(f, "#define %s_width %d\n", name, width); 
 	fprintf(f, "#define %s_height %d\n", name, height); 
