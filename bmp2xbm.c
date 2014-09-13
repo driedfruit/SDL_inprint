@@ -2,11 +2,6 @@
  * 1BPP BMP to XBM converter.
  * Public domain.
  */
-/*
- * BUGS:
- * Can't save non-multitude-of-8 xbms:
- * Because a single bit represents each pixel (black or white), each byte in the array contains the information for eight pixels, with the upper left pixel in the bitmap represented by the low bit of the first byte in the array. If the image width does not match a multiple of 8, the display mechanism ignores and discards the extra bits in the last byte of each row.
- */
 #include <stdio.h>
 #include <string.h>
 #include <endian.h>
@@ -134,12 +129,12 @@ int save_xbm(const char *filename) {
 	fprintf(f, "#define %s_height %d\n", name, height); 
 	fprintf(f, "static unsigned char %s_bits[] = {\n", name); 
 
-	t = 0; bit = 0;
-	for (y = 0; y < height; y++)
-	for (x = 0; x < width;  x++) {
+	t = 0; bit = 0; n = 0;
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width;  x++) {
 
-			if (!img[y * width + x]) 
-				t |= (0x01 << (7-bit));
+			if (!img[y * width + x])
+				t |= (0x80 >> (7-bit));
 			bit++;
 			if (bit > 7) {
 				fprintf(f, "0x%02x, ", t);
@@ -151,6 +146,10 @@ int save_xbm(const char *filename) {
 					n = 0;
 				}
 			}
+		}
+	}
+	if (bit) {
+		fprintf(f, "0x%02x, ", t);
 	}
 
 	fseek(f, -2, SEEK_CUR);
