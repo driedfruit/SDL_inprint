@@ -4,7 +4,7 @@
  */
 /*
  * BUGS:
- * Can't load padded bitmaps. Can't save non-multitude-of-8 xbms: 
+ * Can't save non-multitude-of-8 xbms:
  * Because a single bit represents each pixel (black or white), each byte in the array contains the information for eight pixels, with the upper left pixel in the bitmap represented by the low bit of the first byte in the array. If the image width does not match a multiple of 8, the display mechanism ignores and discards the extra bits in the last byte of each row.
  */
 #include <stdio.h>
@@ -18,7 +18,8 @@ char *img;
 uint16_t width,
 		 height,
 		 offset,
-		 bpp;
+		 bpp,
+		 byte_width;
 
 void show_usage(const char *name) {
 	fprintf(stdout, "Usage:\t%s INPUT-FILE [OUTPUT-FILE]\n", name);
@@ -69,6 +70,9 @@ int load_bitmap(const char *filename) {
 	offset = le16toh(offset);
 	bpp = le16toh(bpp);
 
+	byte_width = (width + 8 - 1) / 8;
+	pad = (4 - (byte_width) % 4) % 4;
+
 	if (bpp != 1) {
 		fprintf(stderr, "Not a monochrome bitmap '%s'\n", filename);
 		fclose(f);
@@ -86,21 +90,20 @@ int load_bitmap(const char *filename) {
 	}
 
 	x = 0;	
-	y = 1;
-	pad = 0;
+	y = 0;
 	while ((n = fread(buffer, sizeof(char), 1024, f))) {
 		int i;
 		for (i = 0; i < n; i++) {
 			int j;
 			for (j = 0; j < 8; j++) {
-				char nibble = ( buffer[i] & (0x1 << j) );
-				img[(height - y) * width + (x + j)] = nibble;
+				char nibble = ( buffer[i] & (0x80 >> j) );
+				img[(height - 1 - y) * width + (x)] = nibble;
+				if (++x >= width) break;
 			}
-			x += 8;
 			if (x >= width) {
 				i += pad;
 				x = 0;
-				y++;
+				if (++y >= height) break;
 			}
 
 		}
