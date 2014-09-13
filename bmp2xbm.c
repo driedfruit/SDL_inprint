@@ -79,6 +79,12 @@ int load_bitmap(const char *filename) {
 
 	img = malloc(sizeof(char) * width * height);
 
+	if (!img) {
+		fprintf(stderr, "Out of memory, can't allocate %dx%d bytes\n", width, height);
+		fclose(f);
+		return 4; /* Out of memory */
+	}
+
 	x = 0;	
 	y = 1;
 	pad = 0;
@@ -169,8 +175,10 @@ int main(int argc, char *argv[]) {
 
 	if (save_xbm(output)) {
 		fprintf(stderr, "Unable to write file %s\n", output);
+		free(img);
 		return -2;
 	}
 
+	free(img);
 	return 0;
 }
